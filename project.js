@@ -2,7 +2,6 @@
 // Determine number of lines to bet on
 // Collect a bet amout
 // Spin the slot machine
-
 // Check if the user won
 // Give the user thein winnigs
 // Play again
@@ -13,21 +12,21 @@ const RWS = 3
 const CLM = 3
 
 const SYMBOLS = {
-    A: 2,
-    B: 4,
-    C: 6,
-    D: 8
+    "🍌": 6,
+    "🍇": 8,
+    "🥒": 12,
+    "🍓": 15
 };
 const AMOUNT = {
-    A: 6,
-    B: 4,
-    C: 3,
-    D: 1.5
+    "🍌": 6,
+    "🍇": 4,
+    "🥒": 3,
+    "🍓": 1.5
 };
 
 const deposit = () => {
     const depositMoney = prompt("Deposit money " )
-    return depositMoney
+    return parseInt(depositMoney, 10)
 }
 
 const lines = () => {
@@ -36,19 +35,18 @@ const lines = () => {
     if(isNaN(linesToBet) || linesToBet <= 0 || linesToBet > 3){
         console.log("Wrong amount of lines, try again.")
     } else {
-        return linesToBet
+        return parseInt(linesToBet)
     }
 }
 }
 
 const betAmount = (balance, linesToBet) => {
     while(true){
-        console.log("Your balance is " + balance)
     const betAmount = prompt("Choose your bet ")
     if(isNaN(betAmount) || betAmount <= 0 || betAmount > balance / linesToBet){
         console.log("Wrong bet amount, choose again.")
     } else {
-        return betAmount
+        return parseInt(betAmount,10)
     }
 }
 }
@@ -120,14 +118,39 @@ const getWinnings = (rows, bet, lines) => {
 
     }
     return winnings;
+}
+
+
+const game = () => {
+
+    let balance = deposit()
+
+    while(true){
+    console.log("Your balance is " + balance)
+    const linesToBet = lines()
+    const bet = betAmount(balance, linesToBet)
+    balance -= bet * linesToBet
+    const reels = spin()
+    const rows = transpose(reels)
+    printRows(rows)
+    console.log("You won: " + getWinnings(rows, bet, linesToBet) + " €")
+    balance += getWinnings(rows, bet, linesToBet)
+
+    const keepPlaying = prompt("Want to keep playing? y/n ")
+
+    if(keepPlaying != 'y') {
+        break;
+    }else if (balance <= 0 ){
+        console.log("You ran out of money")
+        break;
+    }
+    console.clear();
+
+
+
+}
 
 }
 
 
-
-let balance = deposit()
-const linesToBet = lines()
-const bet = betAmount(balance, linesToBet)
-const reels = spin()
-const rows = transpose(reels)
-printRows(rows)
+game()
